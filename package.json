@@ -1,5 +1,15 @@
 {
   "name": "aoc-2023",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "format": "prettier --write .",
+    "aoc": "npm exec -- aoc"
+  },
+  "bin": {
+    "aoc": "./bin/aoc.js"
+  },
+  "devDependencies": {
+    "prettier": "^3.1.0"
+  }
 }
