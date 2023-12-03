@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "lint": "eslint .",
     "format": "prettier --write .",
     "aoc": "npm exec -- aoc"
   },
@@ -10,6 +11,9 @@
     "aoc": "./bin/aoc.js"
   },
   "devDependencies": {
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.0.1",
     "prettier": "^3.1.0"
   }
 }
