@@ -1,34 +1,40 @@
 /**
  * @param {string[]} lines
  */
+
 export default function (lines) {
   let result = 0
-  const numbers = new Set(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'])
+  const regex = /one|two|three|four|five|six|seven|eight|nine|\d/
+  /** @type {Record<string, string>} */
+  const values = {
+    one: '1',
+    two: '2',
+    three: '3',
+    four: '4',
+    five: '5',
+    six: '6',
+    seven: '7',
+    eight: '8',
+    nine: '9'
+  }
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
+    const matches = []
     if (!line) break
-    let leftIdx = 0
-    let rightIdx = line.length - 1
-    let leftNum = null
-    let rightNum = null
-    while (leftIdx <= rightIdx) {
-      if (leftNum && rightNum) break
-      if (numbers.has(line[leftIdx]) && !leftNum) {
-        leftNum = line[leftIdx]
-      } else if (!leftNum) {
-        leftIdx++
-      }
-      if (numbers.has(line[rightIdx]) && !rightNum) {
-        rightNum = line[rightIdx]
-      } else if (!rightNum) {
-        rightIdx--
+    for (let j = 0; j < line.length; j++) {
+      const substring = line.substring(j)
+      const match = substring.match(regex)
+      if (match) {
+        matches.push(match[0])
       }
     }
-    if (leftNum && !rightNum) rightNum = leftNum
-    if (rightNum && !leftNum) leftNum = rightNum
-    const sum = parseInt(`${leftNum}${rightNum}`)
-    result += sum
+    const a = values[matches[0]] ? values[matches[0]] : matches[0]
+    const b = values[matches[matches.length - 1]]
+      ? values[matches[matches.length - 1]]
+      : matches[matches.length - 1]
+    const number = parseInt(`${a}${b}`)
+    result += number
   }
 
   return result
