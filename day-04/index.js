@@ -4,6 +4,9 @@
 export default function (lines) {
   /** @type {string[][]} */
   const myWinningNumbersList = []
+  const result = { sum: 0 }
+  /** @type {Map<number, string[]>} */
+  const currentWinningNumbers = new Map()
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
@@ -21,30 +24,28 @@ export default function (lines) {
       }
     }
 
-    if (myWinningNumbers.length > 0) {
-      myWinningNumbersList.push(myWinningNumbers)
-    }
+    myWinningNumbersList.push(myWinningNumbers)
+    currentWinningNumbers.set(i, myWinningNumbers)
   }
 
-  return sum(myWinningNumbersList)
+  sum(myWinningNumbersList, currentWinningNumbers, result)
+
+  return result.sum
 }
 
 /**
- * @param {string[][]} numbersList
+ * @param {string[][]} winningNumbersList
+ * @param {Map<number, string[]>} currentWinningNumbers
+ * @param {{ sum: number }} result
  */
-function sum(numbersList) {
-  let sum = 0
-  for (let i = 0; i < numbersList.length; i++) {
-    const numbers = numbersList[i]
-    let count = 0
-    for (let j = 0; j < numbers.length; j++) {
-      if (j <= 1) {
-        count += 1
-      } else {
-        count *= 2
-      }
+function sum(winningNumbersList, currentWinningNumbers, result) {
+  for (const [i, winningNumbers] of currentWinningNumbers) {
+    result.sum += 1
+    const nextWinningNumbers = new Map()
+    for (let j = 0; j < winningNumbers.length; j++) {
+      const idx = i + j + 1
+      nextWinningNumbers.set(idx, winningNumbersList[idx])
     }
-    sum += count
+    sum(winningNumbersList, nextWinningNumbers, result)
   }
-  return sum
 }
