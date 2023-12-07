@@ -1,10 +1,8 @@
-import MinHeap from '../min-heap.js'
-
 /**
  * @param {string[]} lines
  */
 export default function (lines) {
-  const seeds = resolveSeeds(lines)
+  const seedRanges = resolveSeedRanges(lines)
   const seedsToSoil = resolveRanges(lines, 'seed-to-soil map:')
   const soilToFertilizer = resolveRanges(lines, 'soil-to-fertilizer map:')
   const fertilizerToWater = resolveRanges(lines, 'fertilizer-to-water map:')
@@ -16,22 +14,31 @@ export default function (lines) {
   )
   const humidityToLocation = resolveRanges(lines, 'humidity-to-location map:')
 
-  const minHeap = new MinHeap()
+  let min = Infinity
 
-  for (let i = 0; i < seeds.length; i++) {
-    const seed = parseInt(seeds[i])
-    const soil = convert(seed, seedsToSoil)
-    const fertilizer = convert(soil, soilToFertilizer)
-    const water = convert(fertilizer, fertilizerToWater)
-    const light = convert(water, waterToLight)
-    const temperature = convert(light, lightToTemperature)
-    const humidity = convert(temperature, temperatureToHumidity)
-    const location = convert(humidity, humidityToLocation)
+  for (let i = 0; i < seedRanges.length; i++) {
+    const [start, length] = seedRanges[i]
+    let j = 0
 
-    minHeap.insert(location)
+    while (j < length) {
+      const seed = start + j
+      const soil = convert(seed, seedsToSoil)
+      const fertilizer = convert(soil, soilToFertilizer)
+      const water = convert(fertilizer, fertilizerToWater)
+      const light = convert(water, waterToLight)
+      const temperature = convert(light, lightToTemperature)
+      const humidity = convert(temperature, temperatureToHumidity)
+      const location = convert(humidity, humidityToLocation)
+
+      if (location < min) {
+        min = location
+      }
+
+      j++
+    }
   }
 
-  return minHeap.extract()
+  return min
 }
 
 /**
@@ -52,8 +59,17 @@ function convert(seed, ranges) {
 /**
  * @param {string[]} lines
  */
-function resolveSeeds(lines) {
-  return lines.splice(0, 1)[0].split(': ')[1].split(' ')
+function resolveSeedRanges(lines) {
+  /** @type {number[][]} */
+  const seeds = []
+  const ranges = lines.splice(0, 1)[0].split(': ')[1].split(' ')
+
+  while (ranges.length) {
+    const [start, length] = ranges.splice(0, 2)
+    seeds.push([parseInt(start), parseInt(length)])
+  }
+
+  return seeds
 }
 
 /**
