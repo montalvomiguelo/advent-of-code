@@ -5,7 +5,7 @@ const cardStrenghts = {
   A: 14,
   K: 13,
   Q: 12,
-  J: 11,
+  J: 1,
   T: 10,
   9: 9,
   8: 8,
@@ -72,6 +72,7 @@ function getHandType(seen) {
   let trioCount = 0
   let quartetCount = 0
   let quintetCount = 0
+  let jokerCount = seen.get('J') ?? 0
   for (const [, count] of seen) {
     if (count === 2) {
       pairCount++
@@ -89,19 +90,58 @@ function getHandType(seen) {
   if (quintetCount === 1) {
     return 'five-of-a-kind'
   }
+  if (quartetCount === 1 && jokerCount === 1) {
+    return 'five-of-a-kind'
+  }
+  if (trioCount === 1 && jokerCount === 2) {
+    return 'five-of-a-kind'
+  }
+  if (pairCount === 1 && jokerCount === 3) {
+    return 'five-of-a-kind'
+  }
+  if (jokerCount === 4) {
+    return 'five-of-a-kind'
+  }
   if (quartetCount === 1) {
+    return 'four-of-a-kind'
+  }
+  if (trioCount === 1 && jokerCount === 1) {
+    return 'four-of-a-kind'
+  }
+  if (pairCount === 2 && jokerCount === 2) {
+    return 'four-of-a-kind'
+  }
+  if (jokerCount === 3) {
     return 'four-of-a-kind'
   }
   if (pairCount === 1 && trioCount === 1) {
     return 'full-house'
   }
+  if (trioCount === 1 && jokerCount === 1) {
+    return 'full-house'
+  }
+  if (pairCount >= 2 && jokerCount === 1) {
+    return 'full-house'
+  }
   if (trioCount === 1) {
+    return 'three-of-a-kind'
+  }
+  if (pairCount === 1 && jokerCount === 1) {
+    return 'three-of-a-kind'
+  }
+  if (jokerCount === 2) {
     return 'three-of-a-kind'
   }
   if (pairCount === 2) {
     return 'two-pair'
   }
+  if (pairCount === 1 && jokerCount === 1) {
+    return 'two-pair'
+  }
   if (pairCount === 1) {
+    return 'one-pair'
+  }
+  if (jokerCount === 1) {
     return 'one-pair'
   }
   return 'high-card'
