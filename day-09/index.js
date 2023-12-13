@@ -2,22 +2,22 @@
  * @param {string[]} lines
  */
 export default function (lines) {
-  const state = { sum: 0 }
-
+  let sum = 0
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    const numbers = line.split(' ').map(e => parseInt(e))
-    getTotal(numbers, state)
+    if (!line) break
+    const numbers = line.split(' ').map((e) => parseInt(e))
+    const sequence = getSequence(numbers)
+    sum += sequence[0]
   }
-
-  return state.sum
+  return sum
 }
 
 /**
  * @param {number[]} numbers
- * @param {{ sum: number }} state
+ * @return {number[]}
  */
-function getTotal (numbers, state) {
+function getSequence(numbers) {
   let total = 0
   /** @type {number[]} */
   const diff = []
@@ -27,7 +27,7 @@ function getTotal (numbers, state) {
     total += a + b
     diff.push(b - a)
   }
-  if (total === 0) return
-  state.sum += numbers[numbers.length - 1]
-  getTotal(diff, state)
+  if (total === 0) return [0, ...numbers]
+  const sequence = getSequence(diff)
+  return [numbers[0] - sequence[0], ...numbers]
 }
